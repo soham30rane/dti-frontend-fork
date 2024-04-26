@@ -1,0 +1,47 @@
+/* Navbar CSS */
+.navbar {
+    background-color: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    justify-content: center; 
+    /* align-items: center; */ 
+}
+
+.navbar-logo {
+    font-size: 24px; /* Increase the font size for better visibility */
+    font-weight: bold;
+    color: #dc490a;
+    display: flex; /* Enable flexbox layout for the logo */
+    align-items: center; /* Center the logo vertically */
+    text-decoration: none;
+    position: relative;
+    /* margin-left: 50%; */
+    
+}
+
+.navbar-user {
+    margin-left: auto; /* Push the user section to the right */
+    display: flex;
+    align-items: center;
+    position: fixed;
+    right: 0;
+    margin: 1px;
+}
+
+.navbar-user img {
+    height: 30px;
+    border-radius: 50%; /* Make the user avatar round */
+    margin-right: 10px;
+}
+
+.navbar-username {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar-logout-icon {
+    height: 20px;
+    margin-right: 5px;
+    cursor: pointer;
+}
