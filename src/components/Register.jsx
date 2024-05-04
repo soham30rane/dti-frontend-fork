@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import './css/Login.css'
 import bgimage from './assets/loginbg.png'
@@ -35,9 +35,13 @@ export default function Register() {
             handleRegister();
         }
     }
+    useEffect(()=>{
+        document.querySelector('body').style.backgroundImage = `url(${bgimage})`
+    },[])
+
     return (
         <div className="container" style={{
-            backgroundImage: bgimage,
+            // backgroundImage: bgimage,
         }}>
             <div className="box">
                 <h1 className="title">Register</h1>
