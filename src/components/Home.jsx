@@ -15,33 +15,50 @@ export default function Home() {
         })
         const data = await response.json();
         console.log(data);
-        setUsername(data.user.username);
+        if(data.user) setUsername(data.user.username);
+        else window.location.href = '/login'
     }
-    useEffect(() => {
+    useEffect(() => {    
         getprofile();
     }, []);
 
     const handleNewQuiz = () => {
         // Logic for creating a new quiz
+        window.location.href = '/create';
     };
 
     const handleJoinQuiz = () => {
         // Logic for joining a quiz
-        if(quizcode.length!==11){
+        if (quizcode.length !== 11) {
             return;
         }
     };
-
+    const changequizcode = (e) => {
+        setQuizcode(e.target.value);
+    }
     return (
-        <div>
-            <div className="user-options">
-                <div className='welcome'>Hi, {username}</div>
-                <div>
-                <button className="new-quiz" onClick={handleNewQuiz}>New Quiz</button>
-                <input type="text" className="join-input" placeholder="Enter quiz code to join" />
-                <button className={quizcode.length==0?"join-quiz disabled-button":"join-quiz"} onClick={handleJoinQuiz}>Join Quiz</button></div>
-            </div> 
-            <div className="about-quest"></div>
+        <div className="user-options">
+            <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-purple-600">
+                <h1 className="text-6xl text-white mb-4">Hi, {username}</h1>
+                <div className="flex items-center">
+                    <button className="new-quiz btn btn-secondary" onClick={handleNewQuiz}>Create Quiz</button>
+                    <h2 className="text-3xl text-white mx-4">or</h2>
+                    <input
+                        type="text"
+                        className="input join-input"
+                        placeholder="Enter quiz code to join"
+                        value={quizcode}
+                        onChange={changequizcode}
+                    />
+                    <button
+                        className={quizcode.length === 0 ? "join-quiz disabled-button mx-3" : "join-quiz btn btn-secondary mx-3"}
+                        onClick={handleJoinQuiz}
+                    >
+                        Join Quiz
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
+
