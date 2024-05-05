@@ -1,47 +1,42 @@
 /* Navbar CSS */
 .navbar {
-    background-color: #f8f9fa;
+    background: linear-gradient(to right, #4d9de0, #5a87d7); /* Updated gradient background */
     padding: 10px;
     display: flex;
-    justify-content: center; 
-    /* align-items: center; */ 
+    justify-content: space-between;
+    align-items: center;
 }
 
 .navbar-logo {
-    font-size: 24px; /* Increase the font size for better visibility */
+    font-size: 24px;
     font-weight: bold;
-    color: #dc490a;
-    display: flex; /* Enable flexbox layout for the logo */
-    align-items: center; /* Center the logo vertically */
+    color: #fff; /* White text color */
     text-decoration: none;
     position: relative;
-    /* margin-left: 50%; */
-    
 }
 
 .navbar-user {
-    margin-left: auto; /* Push the user section to the right */
+    margin-left: auto;
     display: flex;
     align-items: center;
-    position: fixed;
-    right: 0;
-    margin: 1px;
+    margin-right: 20px; /* Increased right margin */
+    justify-content: space-between;
 }
 
 .navbar-user img {
     height: 30px;
-    border-radius: 50%; /* Make the user avatar round */
+    border-radius: 50%;
     margin-right: 10px;
 }
 
 .navbar-username {
-    margin-right: 10px;
     font-weight: bold;
-    color: #333;
+    color: #fff; /* White text color */
 }
 
 .navbar-logout-icon {
     height: 20px;
     margin-right: 5px;
     cursor: pointer;
+    color: #fff; /* White icon color */
 }
