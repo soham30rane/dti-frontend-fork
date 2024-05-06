@@ -13,15 +13,19 @@ const Navbar = ({ connection }) => {
         if (!token) {
             return;
         }
-        const response = await fetch('http://localhost:5000/user/profile', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        });
-        const data = await response.json();
-        setUsername(data.user.username);
+        try {
+            const response = await fetch('http://localhost:5000/user/profile', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                }
+            });
+            const data = await response.json();
+            setUsername(data.user.username);
+        } catch(err) {
+            console.log(err);
+        }
     }
 
     const handleLogout = () => {
@@ -48,7 +52,7 @@ const Navbar = ({ connection }) => {
                 </Tooltip>
                 }
             </div>
-            {localStorage.getItem('user') &&
+            {localStorage.getItem('user') && username!=='' &&
                 <div className="navbar-user">
                     <span className="navbar-username btn mx-4" onClick={() => window.location.href = '/profile'}>
                         {username}
