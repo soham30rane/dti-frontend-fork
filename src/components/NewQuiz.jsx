@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
 import { FaSave } from 'react-icons/fa';
+import bgimage from './assets/loginbg.png'
 
 export default function NewQuiz() {
     const [quizTitle, setQuizTitle] = useState('Title here');
@@ -84,6 +85,12 @@ export default function NewQuiz() {
         updatedQuestions[index].questionText = value;
         setQuestions(updatedQuestions);
     }
+
+    useEffect(()=>{
+        document.querySelector('body').style.backgroundImage = `url(${bgimage})`
+        document.querySelector('body').style.minHeight = `100vh`
+    },[])
+
     return (
         <div className="flex items-center flex-col">
             {showDialog === 1 ? <div>

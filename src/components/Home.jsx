@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './css/Home.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
     const [username, setUsername] = useState('');
     const [quizcode, setQuizcode] = useState('');
+    const navigate = useNavigate()
     const getprofile = async () => {
         const token = localStorage.getItem('user');
         const response = await fetch('http://localhost:5000/user/profile', {
@@ -32,6 +34,8 @@ export default function Home() {
         if (quizcode.length !== 11) {
             return;
         }
+        console.log('Quiz :' ,quizcode)
+        navigate(`/quiz/${quizcode}`)
     };
     const changequizcode = (e) => {
         setQuizcode(e.target.value);

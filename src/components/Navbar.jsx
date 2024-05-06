@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { IoLogOutOutline } from 'react-icons/io5';
 import './css/Navbar.css';
+import successIcon from "./assets/icons8-success-16.png";
+import errorIcon from "./assets/icons8-error-32.png";
+import { Tooltip } from '@material-tailwind/react';
 
-const Navbar = () => {
+const Navbar = ({ connection }) => {
     const [username, setUsername] = useState('');
 
     const getProfile = async () => {
@@ -32,8 +35,18 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
-            <div className="navbar-logo">
+            <div className="navbar-logo px-5">
                 <a href='/'>Quest</a>
+            </div>
+            <div className='px-2 mx-2'>
+                {connection?
+                <Tooltip content="Server connection successful" placement="right">
+                <img src={successIcon} alt="" />
+                </Tooltip>:
+                <Tooltip content="Server connection failed" placement="right">
+                <img src={errorIcon} alt="" />
+                </Tooltip>
+                }
             </div>
             {localStorage.getItem('user') &&
                 <div className="navbar-user">
