@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData }) => {
+const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData , title , isEnded }) => {
   // State to track if the device is mobile
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -28,7 +28,7 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData }) => {
   const newerMaxScore = Math.max(...newerLeaderboardData.map(entry => entry.score));
   const newBoard1 = JSON.parse(JSON.stringify(newerLeaderboardData))
   for(let i=0;i<newBoard1.length;i++){
-    let x = olderLeaderboardData.find(item => item.username === newBoard1[i].username)
+    let x = olderLeaderboardData.find(item => item.u_name === newBoard1[i].u_name)
     newBoard1[i].score = (x ? x.score : 0)
   }
 
@@ -49,10 +49,15 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData }) => {
     return () => clearTimeout(delay);
   }, []);
 
+  useEffect(()=>{
+    document.body.style.minHeight = '100vh'
+    document.body.style.background = 'linear-gradient(to bottom, #4CAF50, #2196F3)';
+  })
+
   return (
-    <div className={`bg-gray-100 rounded-lg shadow-lg overflow-hidden ${isMobile ? 'w-full mr-2' : 'w-4/6 mx-auto mt-8'}`}>
+    <div className={`bg-gray-100 rounded-lg shadow-lg overflow-hidden mt-12 ${isMobile ? 'w-full mr-2' : 'w-4/6 mx-auto'}`}>
       <h2 className={`font-semibold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text ${isMobile ? "text-2xl p-3" : "text-3xl p-6"}`}>
-        Quiz 1521
+        {title} {isEnded?"( Quiz has ENDED )":""}
       </h2>
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
@@ -68,7 +73,7 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData }) => {
               <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-100'}>
                 <td className={`py-3 ${padding} text-left whitespace-nowrap`}>{index + 1}</td>
                 <td className={`py-3 ${padding} text-left`}>
-                  <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>{entry.username}</span>
+                  <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>{entry.u_name}</span>
                 </td>
                 <td className={`py-3 ${padding} text-left ${isMobile ? "w-full" : "w-3/4"}`}>
                   <div className="flex items-center">
