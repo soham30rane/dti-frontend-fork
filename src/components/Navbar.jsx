@@ -14,7 +14,7 @@ const Navbar = ({ connection }) => {
             return;
         }
         try {
-            const response = await fetch('http://localhost:5000/user/profile', {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

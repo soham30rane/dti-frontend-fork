@@ -19,6 +19,7 @@ export default class App extends Component {
     }
 
     componentDidMount() {
+        console.log(process.env.REACT_APP_SERVER_URI)
         socket.on('connect', this.onConnect);
         socket.on('disconnect', this.onDisconnect);
         document.querySelector('html').setAttribute('data-theme', 'light');
