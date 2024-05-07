@@ -91,8 +91,21 @@ export default function NewQuiz() {
         document.querySelector('body').style.minHeight = `100vh`
     },[])
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768);
+        };
+        window.addEventListener('resize', handleResize);
+        document.body.style.minHeight = '100vh'
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+    },[]);
+
     return (
-        <div className="flex items-center flex-col">
+        <div className="flex items-center flex-col mx-2">
             {showDialog === 1 ? <div>
                 <dialog id="error_modal" className="modal modal-bottom sm:modal-middle">
                     <div className="modal-box">
@@ -101,7 +114,10 @@ export default function NewQuiz() {
                         <div className="modal-action">
                             <form method="dialog">
                                 {/* if there is a button in form, it will close the modal */}
-                                <button className="btn">Close</button>
+                                <button className="btn" onClick={()=>{
+                                    console.log('clicked')
+                                    window.location.href = '/'
+                                }} >Close</button>
                             </form>
                         </div>
                     </div>
@@ -120,7 +136,10 @@ export default function NewQuiz() {
                         <div className="modal-action">
                             <form method="dialog">
                                 {/* if there is a button in form, it will close the modal */}
-                                <button className="btn">Close</button>
+                                <button className="btn" onClick={()=>{
+                                    console.log('clicked')
+                                    window.location.href = '/'
+                                }}>Close</button>
                             </form>
                         </div>
                     </div>
@@ -134,7 +153,7 @@ export default function NewQuiz() {
                 onChange={handleTitleChange}
             />
             {questions.map((question, questionIndex) => (
-                <div className="card w-96 bg-base-100  my-10 shadow-xl" key={questionIndex}>
+                <div className={`card ${isMobile?'w-full':'w-96'} bg-base-100  my-10 shadow-xl`} key={questionIndex}>
                     <div className="card-body">
                         <div className="flex items-center">
                             <textarea placeholder="Type here" className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText}style={{
