@@ -1,4 +1,4 @@
-import { React, Component,useState } from 'react'
+import { React, Component } from 'react'
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
 import Home from './components/Home'
 import Login from './components/Login'
@@ -19,7 +19,6 @@ export default class App extends Component {
     }
 
     componentDidMount() {
-        console.log(process.env.REACT_APP_SERVER_URI)
         socket.on('connect', this.onConnect);
         socket.on('disconnect', this.onDisconnect);
         document.querySelector('html').setAttribute('data-theme', 'light');
@@ -40,7 +39,7 @@ export default class App extends Component {
     };
     
     render() {
-        const { isConnected,theme } = this.state
+        const { isConnected } = this.state
         return (
             <div>
                 <Navbar connection={isConnected}/>

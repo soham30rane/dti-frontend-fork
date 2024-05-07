@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './css/Home.css';
 import { useNavigate } from 'react-router-dom';
-import { data } from 'autoprefixer';
 
 export default function Home() {
     const [username, setUsername] = useState('');

@@ -3,7 +3,7 @@ import TimerDisplay from './QuizTime';
 import { socket } from '../socket';
 
 const QuizQuestion = ({ question,roomcode }) => {
-  const { questionText, options, correctIndex, points,q_index } = question;
+  const { questionText, options, correctIndex,q_index } = question;
   const [selectedOption, setSelectedOption] = useState(null);
   const [answered, setAnswered] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);

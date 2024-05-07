@@ -23,8 +23,6 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData , title , isEn
   olderLeaderboardData.sort((a, b) => b.score - a.score);
   newerLeaderboardData.sort((a, b) => b.score - a.score);
 
-  // Find the maximum score
-  const olderMaxScore = Math.max(...olderLeaderboardData.map(entry => entry.score));
   const newerMaxScore = Math.max(...newerLeaderboardData.map(entry => entry.score));
   const newBoard1 = JSON.parse(JSON.stringify(newerLeaderboardData))
   for(let i=0;i<newBoard1.length;i++){
@@ -47,7 +45,7 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData , title , isEn
     }, 1000);
 
     return () => clearTimeout(delay);
-  }, []);
+  });
 
   useEffect(()=>{
     document.body.style.minHeight = '100vh'
