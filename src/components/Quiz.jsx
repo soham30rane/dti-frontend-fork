@@ -65,6 +65,7 @@ export default function Quiz() {
     }
     function onQuizEnded(leaderboard,title){
       setQuizTitle(title)
+      setQuizFound(true)
       setOldLeaderBoard([])
       setNewLeaderBoard(leaderboard)
       setIsEnded(true)
