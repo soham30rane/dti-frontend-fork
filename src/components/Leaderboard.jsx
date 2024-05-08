@@ -80,7 +80,7 @@ const Leaderboard = ({ olderLeaderboardData, newerLeaderboardData , title , isEn
                       <div
                         className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 h-full rounded-full"
                         style={{
-                          width: `${(entry.score / newerMaxScore) * 100}%`,
+                          width: `${newerMaxScore === 0 ? 0 : ((entry.score / newerMaxScore) * 100)}%`,
                           transition: 'width 1s ease-in-out' // CSS transition for width change
                         }}
                       ></div>
