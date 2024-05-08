@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import { useParams,useNavigate } from 'react-router-dom'
 import { socket } from '../socket';
 import QuizNotFound from './QuizNotFound';
@@ -24,6 +24,7 @@ export default function Quiz() {
   const [isEnded,setIsEnded] = useState(false)
   const [quizTitle,setQuizTitle] = useState("Title")
   const navigate = useNavigate();
+  const shouldJoinRoomRef = useRef(true);
 
   const updateLeaderBoards = (lb) => {
     setOldLeaderBoard(newLeaderBoard)
@@ -80,11 +81,13 @@ export default function Quiz() {
     socket.on('quiz-ended',onQuizEnded)
 
     // Join the quiz
-    if(!quizFound){
+    if(!quizFound && shouldJoinRoomRef.current){
       let token = localStorage.getItem('user')
       console.log('token : ',token)
       console.log('code',quizId)
+      console.log('Joining : ',token)
       socket.emit('join-room',quizId,token)
+      shouldJoinRoomRef.current = false
     }
 
     return () => {
