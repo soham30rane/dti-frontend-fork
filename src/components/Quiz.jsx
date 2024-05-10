@@ -40,6 +40,7 @@ export default function Quiz() {
       },2000)
     }
     function onLoginRequired(){
+      console.log("got login req")
       navigate('/login')
     }
     function onQuizNotFound(){

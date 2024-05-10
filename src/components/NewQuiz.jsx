@@ -28,8 +28,8 @@ export default function NewQuiz() {
         setQuestions([
             ...questions,
             {
-                questionText: 'Question ' + (questions.length + 1),
-                options: ['Option A', 'Option B', 'Option C', 'Option D'],
+                questionText: '',
+                options: ['', '', '', ''],
                 correctIndex: 0,
                 points: 1000,
             },
@@ -37,6 +37,25 @@ export default function NewQuiz() {
     };
 
     const handleSave = async () => {
+        const questionsCopy = []
+        for(let i=0;i<questions.length;i++){
+            let question = questions[i];
+            if(question.questionText === ''){
+                continue
+            }
+            questionsCopy.push(question)
+            for(let i=0;i<questionsCopy[questionsCopy.length - 1].options.length;i++){
+                let option = questionsCopy[questionsCopy.length - 1].options[i]
+                if(option === ''){
+                    questionsCopy[questionsCopy.length - 1].options[i] = 'NA'
+                }
+            }
+        }
+        if(questionsCopy.length === 0){
+            setDialog(1)
+            seterror("Quiz is empty")
+            return
+        }
         const response = await fetch(`${process.env.REACT_APP_API_URL}/quiz/create`, {
             method: 'POST',
             headers: {
@@ -45,7 +64,7 @@ export default function NewQuiz() {
             },
             body: JSON.stringify({
                 title: quizTitle,
-                questions: questions
+                questions: questionsCopy
             })
         })
         const data = await response.json();
@@ -114,10 +133,7 @@ export default function NewQuiz() {
                         <div className="modal-action">
                             <form method="dialog">
                                 {/* if there is a button in form, it will close the modal */}
-                                <button className="btn" onClick={()=>{
-                                    console.log('clicked')
-                                    window.location.href = '/'
-                                }} >Close</button>
+                                <button className="btn">Close</button>
                             </form>
                         </div>
                     </div>
@@ -156,7 +172,7 @@ export default function NewQuiz() {
                 <div className={`card ${isMobile?'w-full':'w-96'} bg-base-100  my-10 shadow-xl`} key={questionIndex}>
                     <div className="card-body">
                         <div className="flex items-center">
-                            <textarea placeholder="Type here" className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText}style={{
+                            <textarea placeholder={`Question ${questionIndex + 1}`} className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText}style={{
                                 resize: 'none'
                             }} onChange={(e) => {
                                 handleQuestionTitleChange(questionIndex, e.target.value);
@@ -166,9 +182,9 @@ export default function NewQuiz() {
                             </button>
                         </div>
                         {question.options.map((option, optionIndex) => (
-                            <div className="form-control" key={optionIndex}>
+                            <div className={`form-control ${optionIndex === question.correctIndex?' bg-lime-200':''}`} key={optionIndex}>
                                 <label className="cursor-pointer label">
-                                    <input className="label-text px-2" value={option} onChange={(e)=>{
+                                    <input className={`label-text px-2 ${optionIndex === question.correctIndex?' bg-lime-200':''}`} placeholder={`option ${optionIndex + 1}`} value={option} onChange={(e)=>{
                                         handleOptionchange(questionIndex,optionIndex,e.target.value)
                                     }}/>
                                     <input
@@ -190,6 +206,8 @@ export default function NewQuiz() {
                                 className="input input-bordered w-full max-w-xs"
                                 value={question.points}
                                 onChange={(e) => handleUpdatePoints(questionIndex, e.target.value)}
+                                step={`50`}
+                                min="0"
                             />
                         </div>
                     </div>
