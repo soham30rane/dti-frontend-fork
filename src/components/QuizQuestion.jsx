@@ -14,9 +14,9 @@ const QuizQuestion = ({ question,roomcode }) => {
     console.log('Elapsed time:', elapsedTime);
     const timer = setInterval(() => {
       if (!answered) {
-        setElapsedTime((prevTime) => prevTime + 1);
+        setElapsedTime((prevTime) => prevTime + 0.1);
       }
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(timer);
   }, [answered, elapsedTime]);
@@ -26,8 +26,11 @@ const QuizQuestion = ({ question,roomcode }) => {
       setSelectedOption(index);
       setAnswered(true);
       let token = localStorage.getItem('user')
-      console.log('answer',roomcode,q_index,index,token)
-      socket.emit('answer',roomcode,q_index,index,token)
+      console.log('Delta factor : ',getPercentageRemaining())
+      const delta = (100 - getPercentageRemaining()) * -0.01 * 0.6; // Minimum score 40%
+      console.log(delta)
+      console.log('answer',roomcode,q_index,index,token,delta)
+      socket.emit('answer',roomcode,q_index,index,token,delta)
     }
   };
 
