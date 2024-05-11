@@ -7,6 +7,19 @@ import { Tooltip } from '@material-tailwind/react';
 
 const Navbar = ({ connection }) => {
     const [username, setUsername] = useState('');
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768);
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
 
     const getProfile = async () => {
         const token = localStorage.getItem('user');
@@ -44,10 +57,10 @@ const Navbar = ({ connection }) => {
             </div>
             <div className='px-2 mx-2'>
                 {connection?
-                <Tooltip content="Server connection successful" placement="right">
+                <Tooltip content="Server connection successful" placement={isMobile?'bottom':'right'} offset={isMobile?25:5}>
                 <img src={successIcon} alt="" />
                 </Tooltip>:
-                <Tooltip content="Server connection failed" placement="right">
+                <Tooltip content="Server starting up. Please wait a moment. This might take up to 30 seconds" placement={isMobile?'bottom':'right'} open={true} offset={isMobile?25:5}>
                 <img src={errorIcon} alt="" />
                 </Tooltip>
                 }
