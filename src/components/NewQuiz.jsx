@@ -123,6 +123,25 @@ export default function NewQuiz() {
         };
     },[]);
 
+    useEffect(()=>{
+        const handleBeforeUnload = (event) => {
+            if(code){ return; }
+            event.preventDefault();
+            try {
+                console.log('confirming')
+                const message = 'Confirm resubmission: You will lose all the data if you refresh.';
+                event.returnValue = message; // Gecko, Trident, Chrome 34+
+                return message; // Gecko, WebKit, Chrome <34
+            } catch(err){
+                console.log(err)
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    },[code])
+
     return (
         <div className="flex items-center flex-col mx-2">
             {showDialog === 1 ? <div>

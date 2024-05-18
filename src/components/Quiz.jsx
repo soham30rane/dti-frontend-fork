@@ -23,6 +23,7 @@ export default function Quiz() {
   const [newLeaderBoard, setNewLeaderBoard] = useState([])
   const [isEnded,setIsEnded] = useState(false)
   const [quizTitle,setQuizTitle] = useState("Title")
+  const [onlineCount,setOnlineCount] = useState(0)
   const navigate = useNavigate();
   const shouldJoinRoomRef = useRef(true);
 
@@ -46,9 +47,10 @@ export default function Quiz() {
     function onQuizNotFound(){
       setQuizFound(false)
     }
-    function onRoomJoined(roomCode,title){
+    function onRoomJoined(roomCode,title,onlineCount){
       setQuizFound(true)
       setQuizTitle(title)
+      setOnlineCount(onlineCount)
       console.log("Joined the room : ",roomCode)
     }
     function onGetReady(){
@@ -91,6 +93,20 @@ export default function Quiz() {
       shouldJoinRoomRef.current = false
     }
 
+    function handleBeforeUnload(){
+      if(quizFound){
+        let token = localStorage.getItem('user')
+        console.log('token : ',token)
+        console.log('code',quizId)
+        console.log('Joining : ',token)
+        localStorage.setItem('last-emit',JSON.stringify({quizId,token,msg:'leave-room'}))
+        console.log('Leaving rrom')
+        socket.emit('leave-the-room',quizId,token)
+      }
+    }
+
+    window.addEventListener('beforeunload',handleBeforeUnload)
+
     return () => {
       socket.off('login-required',onLoginRequired)
       socket.off('quiz-not-found',onQuizNotFound)
@@ -99,6 +115,7 @@ export default function Quiz() {
       socket.off('question',onQuestion)
       socket.off('results',onResult)
       socket.off('quiz-ended',onQuizEnded)
+      window.removeEventListener('beforeunload',handleBeforeUnload)
     }
   })
 
@@ -115,7 +132,7 @@ export default function Quiz() {
   }
 
   if(!running){
-    return (<div> <QuizNotStarted quizCode={quizId} title={quizTitle} /> </div> )
+    return (<div> <QuizNotStarted quizCode={quizId} title={quizTitle} onlineCount={onlineCount}/> </div> )
   } else {
     switch(runningState){
       case RunStates.QUESTION : 

@@ -77,6 +77,8 @@ const Navbar = ({ connection }) => {
                         style={{ backgroundColor: '#2563EB', color: '#FFFFFF', padding: '0.5rem 1rem', borderRadius: '0.375rem', transition: 'background-color 0.3s' }}
                         className="btn mx-4 hover:bg-blue-600"
                         onClick={() => (window.location.href = '/profile')}
+                        onMouseEnter={(e) => { e.target.style.backgroundColor = '#1E40AF'; }}
+                        onMouseLeave={(e) => { e.target.style.backgroundColor = '#2563EB'; }}
                     >
                         Dashboard
                     </button>
