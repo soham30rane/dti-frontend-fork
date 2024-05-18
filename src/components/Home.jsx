@@ -32,7 +32,7 @@ export default function Home() {
 
     const handleNewQuiz = () => {
         // Logic for creating a new quiz
-        window.location.href = '/create';
+        window.location.href = '/create/normal';
     };
 
     const handleJoinQuiz = () => {

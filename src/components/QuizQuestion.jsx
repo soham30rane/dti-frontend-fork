@@ -27,7 +27,7 @@ const QuizQuestion = ({ question,roomcode }) => {
       setAnswered(true);
       let token = localStorage.getItem('user')
       console.log('Delta factor : ',getPercentageRemaining())
-      const delta = (100 - getPercentageRemaining()) * -0.01 * 0.6; // Minimum score 40%
+      const delta = (100 - getPercentageRemaining()) * -0.01 * 0.5; // Minimum score for right answer 50%
       console.log(delta)
       console.log('answer',roomcode,q_index,index,token,delta)
       socket.emit('answer',roomcode,q_index,index,token,delta)

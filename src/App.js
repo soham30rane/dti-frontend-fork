@@ -47,7 +47,7 @@ export default class App extends Component {
                     <Routes>
                         <Route exact path='/' element={<Home />} />
                         <Route exact path='/login' element={<Login />} />
-                        <Route exact path='/create' element={<NewQuiz />} />
+                        <Route exact path='/create/:mode' element={<NewQuiz />} />
                         <Route exact path='/register' element={<Register />} />
                         <Route exact path='/profile' element={<Profile />} />
                         <Route exact path='/quiz/:quizId' element={<Quiz />} />

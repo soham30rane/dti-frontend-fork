@@ -115,10 +115,14 @@ export default function Profile() {
 
     const duplicateQuiz = (quiz) => {
         console.log("duplicating quiz")
+        localStorage.setItem('duplicatedQuiz',JSON.stringify(quiz))
+        window.location.href = "/create/duplicate"
     }
 
     const editQuiz = (quiz) => {
         console.log("Editing quiz")
+        localStorage.setItem('editedQuiz',JSON.stringify(quiz))
+        window.location.href = "/create/edit"
     }
 
     const downloadPDF = (quiz) => {
@@ -195,12 +199,12 @@ export default function Profile() {
                                         title="Duplicate Quiz">
                                         <AiOutlineCopy />
                                     </button>
-                                    <button
+                                    {!quiz.started && <button
                                         className="text-gray-600 hover:text-gray-800"
                                         onClick={() => { editQuiz(quiz) }}
                                         title="Edit Quiz">
                                         <AiFillEdit />
-                                    </button>
+                                    </button>}
                                     <button
                                         className="text-gray-600 hover:text-gray-800"
                                         onClick={() => { downloadPDF(quiz) }}

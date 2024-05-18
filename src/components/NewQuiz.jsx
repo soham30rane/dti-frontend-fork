@@ -3,13 +3,41 @@ import { CiCirclePlus } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
 import { FaSave } from 'react-icons/fa';
 import bgimage from './assets/loginbg.png'
+import { useParams } from 'react-router-dom';
+
+const OP_MODE = {
+    NORMAL : "normal",
+    DUPLICATE : "duplicate",
+    EDIT : "edit"
+}
 
 export default function NewQuiz() {
+    const { mode } = useParams();
     const [quizTitle, setQuizTitle] = useState('Title here');
     const [questions, setQuestions] = useState([]);
     const [showDialog, setDialog] = useState();
     const [error, seterror] = useState('');
     const [code, setCode] = useState('');
+    const [editCode,setEditCode] = useState('');
+
+    useEffect(()=>{
+        if(mode === OP_MODE.DUPLICATE){
+            let oldquiz = JSON.parse(localStorage.getItem('duplicatedQuiz'))
+            if(oldquiz){
+                setQuizTitle(`${oldquiz.title} - Copy`)
+                setQuestions(oldquiz.questions)
+            }
+        } else if ( mode === OP_MODE.EDIT ) {
+            let oldquiz = JSON.parse(localStorage.getItem('editedQuiz'))
+            if(!oldquiz){
+                window.location.href = '/'
+            } else {
+                setQuizTitle(oldquiz.title)
+                setQuestions(oldquiz.questions)
+                setEditCode(oldquiz.code)
+            }
+        }
+    },[mode])
 
     useEffect(() => {
         if (showDialog === 1) {
@@ -56,16 +84,20 @@ export default function NewQuiz() {
             seterror("Quiz is empty")
             return
         }
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/quiz/create`, {
+        let bodyData = {
+            title: quizTitle,
+            questions: questionsCopy
+        }
+        if(mode === OP_MODE.EDIT){ 
+            bodyData.quizCode = editCode
+        }
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/quiz/${mode === OP_MODE.EDIT?'edit':'create'}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': localStorage.getItem('user')
             },
-            body: JSON.stringify({
-                title: quizTitle,
-                questions: questionsCopy
-            })
+            body: JSON.stringify(bodyData)
         })
         const data = await response.json();
         console.log(data)
@@ -162,9 +194,9 @@ export default function NewQuiz() {
                 <dialog id="saved_modal" className="modal modal-bottom sm:modal-middle">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg text-error">Quiz saved</h3>
-                        <p className="py-4">{window.location.href.slice(0, -6) + 'quiz/' + code}</p>
+                        <p className="py-4">{window.location.href.slice(0, -7 - (mode.length)) + 'quiz/' + code}</p>
                         <button className='btn btn-primary' onClick={() => {
-                            navigator.clipboard.writeText(window.location.href.slice(0, -6) + 'quiz/' + code)
+                            navigator.clipboard.writeText(window.location.href.slice(0, -7 - (mode.length)) + 'quiz/' + code)
                         }}>
                             Copy
                         </button>
@@ -191,7 +223,7 @@ export default function NewQuiz() {
                 <div className={`card ${isMobile?'w-full':'w-96'} bg-base-100  my-10 shadow-xl`} key={questionIndex}>
                     <div className="card-body">
                         <div className="flex items-center">
-                            <textarea placeholder={`Question ${questionIndex + 1}`} className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText}style={{
+                            <textarea placeholder={`Question ${questionIndex + 1}`} className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText} style={{
                                 resize: 'none'
                             }} onChange={(e) => {
                                 handleQuestionTitleChange(questionIndex, e.target.value);
@@ -238,7 +270,7 @@ export default function NewQuiz() {
             </button>
             <button className={"btn btn-secondary mx-10 my-10 "} onClick={handleSave}>
                 <FaSave />
-                Save
+                {mode === OP_MODE.EDIT ? 'Save changes' : 'Save'}
             </button>
         </div>
     );
