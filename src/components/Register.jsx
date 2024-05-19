@@ -18,10 +18,9 @@ export default function Register() {
 
     const sendOTP = async () => {
         console.log('Sending otp')
-        if(!isValidEmail()){
-            setmessage("Please enter valid email")
-            return;
-        }
+        if(!isValidEmail()){ setmessage("Please enter valid email");return;}
+        if(password.length < 4){ setmessage('Password is too short');return;}
+        if(!username){setmessage('Username required');return;}
         setmessage('')
         // send the otp
         try {
@@ -36,12 +35,10 @@ export default function Register() {
                 })       
             })
             const data = await (response).json();
+            setmessage(data.message)
             if(data.error) { 
-                console.log("Some error")
                 console.log(data)
                 return
-            } else {
-                setmessage(data.message)
             }
             setShowOtpBox(true)
         } catch(err){
@@ -51,26 +48,33 @@ export default function Register() {
     }
 
     const handleVerify = async () => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/register`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'breakanti'
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                username: username,
-                userOtp : otpVal
-            })
-        });
-        const data = await (response).json();
-        console.log(data);
-        if(data.error){
-            setmessage(data.message);
-        }else{
-            localStorage.setItem('user',data.token);
-            window.location.href = "/";
+        if(password.length < 4){ setmessage('Password is too short');return;}
+        if(!username){setmessage('Username required');return;}
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/register`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'breakanti'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    username: username,
+                    userOtp : otpVal
+                })
+            });
+            const data = await (response).json();
+            console.log(data);
+            if(data.error){
+                setmessage(data.message);
+            }else{
+                localStorage.setItem('user',data.token);
+                window.location.href = "/";
+            }
+        } catch(err){
+            setmessage('Server error')
+            return
         }
     }
     window.onkeydown = (e) => {
@@ -122,7 +126,7 @@ export default function Register() {
                         </div>}
                     </div>
                     <div className="buttons">
-                        <button className={`login-button register ${showOtpBox && otpVal.length !== 6?'disable':''}`} disabled={showOtpBox && otpVal.length !== 6} type="button" onClick={()=>{
+                        <button className={`login-button register`} type="button" onClick={()=>{
                             if(showOtpBox){
                                 handleVerify()
                             } else {
