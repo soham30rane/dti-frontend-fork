@@ -3,6 +3,7 @@ import { AiOutlineCopy, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import { MdFileDownload,MdPeople } from 'react-icons/md';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { getQuizPdf } from '../helpers/pdfLogic';
 
 const getQuizPriority = (quiz) => {
     if(quiz.started && !quiz.completed){
@@ -52,7 +53,7 @@ export default function Profile() {
             },
         });
         const data = await response.json();
-        console.log(data.quizes);
+        // console.log(data.quizes);
         setQuizzes(data.quizes);
         setOtherQuizzes(data.otherQuizzes)
     };
@@ -127,6 +128,7 @@ export default function Profile() {
 
     const downloadPDF = (quiz) => {
         console.log("Downloading pdf")
+        getQuizPdf(quiz)
     }
 
     const deleteQuiz = (quiz) => {
