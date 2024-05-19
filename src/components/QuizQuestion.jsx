@@ -3,11 +3,13 @@ import TimerDisplay from './QuizTime';
 import { socket } from '../socket';
 
 const QuizQuestion = ({ question,roomcode }) => {
-  const { questionText, options, correctIndex,q_index,questionImgUrl } = question;
+  const { questionText, options, correctIndex,q_index,questionImgUrl,duration } = question;
   const [selectedOption, setSelectedOption] = useState(null);
   const [answered, setAnswered] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const totalTime = (duration - 1)
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,9 +23,8 @@ const QuizQuestion = ({ question,roomcode }) => {
     };
   });
 
-  const totalTime = 9; // Total time in seconds
-
   useEffect(() => {
+    console.log('total time : ',totalTime)
     console.log('Elapsed time:', elapsedTime);
     const timer = setInterval(() => {
       if (!answered) {
@@ -32,7 +33,7 @@ const QuizQuestion = ({ question,roomcode }) => {
     }, 100);
 
     return () => clearInterval(timer);
-  }, [answered, elapsedTime]);
+  }, [answered, elapsedTime,totalTime]);
 
   const handleOptionSelect = (index) => {
     if (!answered) {

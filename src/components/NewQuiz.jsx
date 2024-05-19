@@ -60,6 +60,7 @@ export default function NewQuiz() {
                 options: ['', '', '', ''],
                 correctIndex: 0,
                 points: 1000,
+                duration : 10
             },
         ]);
     };
@@ -109,6 +110,13 @@ export default function NewQuiz() {
         updatedQuestions[index].points = value;
         setQuestions(updatedQuestions);
     };
+
+    const handleUpdateDuration = (index, value) => {
+        const updatedQuestions = [...questions];
+        updatedQuestions[index].duration = value;
+        setQuestions(updatedQuestions);
+    };
+
     const handleOptionchange = (questionIndex,optionIndex,value)=>{
         const updatedQuestions = [...questions];
         updatedQuestions[questionIndex].options[optionIndex] = value;
@@ -331,16 +339,30 @@ export default function NewQuiz() {
                                 </label>
                             </div>
                         ))}
-                        <div className="form-control flex items-center">
-                            <label className="label inline-block w-20 mr-2">Points</label>
-                            <input
-                                type="number"
-                                className="input input-bordered w-full max-w-xs"
-                                value={question.points}
-                                onChange={(e) => handleUpdatePoints(questionIndex, e.target.value)}
-                                step={`50`}
-                                min="0"
-                            />
+                        <div className='flex flex-row justify-center'>
+                            <div className="form-control flex items-center">
+                                <label className="label inline-block w-20 mr-2">{`Points`}</label>
+                                <input
+                                    type="number"
+                                    className="input input-bordered w-full max-w-xs"
+                                    value={question.points}
+                                    onChange={(e) => handleUpdatePoints(questionIndex, e.target.value)}
+                                    step={`50`}
+                                    min="0"
+                                />
+                            </div>
+                            <div className="form-control flex items-center">
+                                <label className="label inline-block w-20 mr-2">{`Time (s)`}</label>
+                                <input
+                                    type='number'
+                                    className="input input-bordered w-full max-w-xs"
+                                    value={question.duration}
+                                    onChange={(e) => handleUpdateDuration(questionIndex, e.target.value)}
+                                    step={`5`}
+                                    min="5"
+                                    max={`60`}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
