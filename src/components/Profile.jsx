@@ -44,18 +44,26 @@ export default function Profile() {
     },[]);
 
     const getProfile = async () => {
-        const token = localStorage.getItem('user');
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: token,
-            },
-        });
-        const data = await response.json();
-        // console.log(data.quizes);
-        setQuizzes(data.quizes);
-        setOtherQuizzes(data.otherQuizzes)
+        try {
+            const token = localStorage.getItem('user');
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/profile`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token,
+                },
+            });
+            const data = await response.json();
+            if(data.error){
+                window.location.href = '/login'
+            }
+            // console.log(data.quizes);
+            setQuizzes(data.quizes);
+            setOtherQuizzes(data.otherQuizzes)
+        } catch(err){
+            console.log(err)
+            window.location.href = '/'
+        }
     };
 
     const deleteApiCall = async (quizCode) => {
@@ -159,8 +167,10 @@ export default function Profile() {
     },[displayMyQuizzes,otherQuizzes,quizzes])
 
     let lastPageNo = useMemo(()=>{
-        return (Math.floor(quizzesToDisplay.length / TILES_PER_PAGE) 
-        + Number(quizzesToDisplay.length % TILES_PER_PAGE !== 0)); 
+        if(quizzesToDisplay){
+            return (Math.floor(quizzesToDisplay.length / TILES_PER_PAGE) 
+            + Number(quizzesToDisplay.length % TILES_PER_PAGE !== 0)); 
+        } else { return }
     },[quizzesToDisplay])
 
     return (
@@ -175,7 +185,7 @@ export default function Profile() {
                 <span role="tab" className={`tab ${displayMyQuizzes?'':'tab-active'}`}  
                 onClick={()=>{ setDisplayMyQuizzes(false)}}>Other Quizzes</span>
             </div>
-                <div className="quiz-list">
+                {quizzesToDisplay && <div className="quiz-list">
                     {quizzesToDisplay.length === 0?<div className='text-center text-gray-800 text-lg font-semibold py-4' > No Quizzes yet </div>:<></>}
                     {sortQuizzes(quizzesToDisplay).slice((pageNo-1)*TILES_PER_PAGE,(pageNo-1)*TILES_PER_PAGE + TILES_PER_PAGE).map((quiz, index) => (
                         <div
@@ -232,7 +242,7 @@ export default function Profile() {
                         </div>}
                     </div>
                     ))}
-                </div>
+                </div>}
                 {lastPageNo>1 && <div className="join">
                     <button className={`join-item btn ${pageNo === 1?'btn-disabled':''}`} onClick={()=>{setPageNo(pageNo-1)}}>«</button>
                     <button className="join-item btn">Page {pageNo}</button>

@@ -8,7 +8,49 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [username, setusername] = useState('');
     const [errormessage, setmessage] = useState('');
-    const handleRegister = async () => {
+    const [otpVal,setOtpVal] = useState('')
+    const [showOtpBox,setShowOtpBox] = useState(false)
+
+    const isValidEmail = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    const sendOTP = async () => {
+        console.log('Sending otp')
+        if(!isValidEmail()){
+            setmessage("Please enter valid email")
+            return;
+        }
+        setmessage('')
+        // send the otp
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/sendOtp`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'breakanti'
+                },
+                body: JSON.stringify({
+                    email: email
+                })       
+            })
+            const data = await (response).json();
+            if(data.error) { 
+                console.log("Some error")
+                console.log(data)
+                return
+            } else {
+                setmessage(data.message)
+            }
+            setShowOtpBox(true)
+        } catch(err){
+            setmessage('Unable to send otp')
+            console.log(err)
+        }
+    }
+
+    const handleVerify = async () => {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/user/register`,{
             method: 'POST',
             headers: {
@@ -18,7 +60,8 @@ export default function Register() {
             body: JSON.stringify({
                 email: email,
                 password: password,
-                username: username
+                username: username,
+                userOtp : otpVal
             })
         });
         const data = await (response).json();
@@ -32,7 +75,11 @@ export default function Register() {
     }
     window.onkeydown = (e) => {
         if(e.key === "Enter"){
-            handleRegister();
+            if(showOtpBox){
+                sendOTP()
+            } else {
+                handleVerify()
+            }
         }
     }
     useEffect(()=>{
@@ -68,11 +115,20 @@ export default function Register() {
                                 setPassword(e.target.value);
                             }}/>
                         </div>
+                        {showOtpBox && <div className="input">
+                            <input type="number" className="login-input" placeholder="Enter OTP" value={otpVal} required onChange={(e)=>{
+                                setOtpVal(e.target.value);
+                            }}/>
+                        </div>}
                     </div>
                     <div className="buttons">
-                        <button className="login-button register" type="button" onClick={()=>{
-                            handleRegister();
-                        }}>Register</button>
+                        <button className={`login-button register ${showOtpBox && otpVal.length !== 6?'disable':''}`} disabled={showOtpBox && otpVal.length !== 6} type="button" onClick={()=>{
+                            if(showOtpBox){
+                                handleVerify()
+                            } else {
+                                sendOTP()
+                            }
+                        }}>{showOtpBox ? 'Verify' : 'Register'}</button>
                         <button className="login-button disable signin" type="button" onClick={()=>{
                             window.location.href = "/login";
                         }}>Login</button>

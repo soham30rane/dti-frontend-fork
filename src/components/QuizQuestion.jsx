@@ -62,7 +62,7 @@ const QuizQuestion = ({ question,roomcode }) => {
             className={`w-full py-4 px-8 rounded-lg font-semibold text-lg focus:outline-none border border-gray-300 ${getOptionStyle(index)} transition duration-500 ease-in-out ${answered&& correctIndex === index ? 'bg-green-500 text-white':''}`}
             onClick={() => handleOptionSelect(index)}
             disabled={answered && selectedOption !== index}
-            style={{display:`${option === 'NA'?'none':''}`}}
+            style={{display:`${option === ''?'none':''}`}}
           >
             {option}
           </button>

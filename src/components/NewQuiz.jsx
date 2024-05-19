@@ -72,12 +72,12 @@ export default function NewQuiz() {
                 continue
             }
             questionsCopy.push(question)
-            for(let i=0;i<questionsCopy[questionsCopy.length - 1].options.length;i++){
-                let option = questionsCopy[questionsCopy.length - 1].options[i]
-                if(option === ''){
-                    questionsCopy[questionsCopy.length - 1].options[i] = 'NA'
-                }
-            }
+            // for(let i=0;i<questionsCopy[questionsCopy.length - 1].options.length;i++){
+            //     let option = questionsCopy[questionsCopy.length - 1].options[i]
+            //     if(option === ''){
+            //         questionsCopy[questionsCopy.length - 1].options[i] = 'NA'
+            //     }
+            // }
         }
         if(questionsCopy.length === 0){
             setDialog(1)
