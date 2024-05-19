@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
-import { MdDelete } from 'react-icons/md';
-import { FaSave } from 'react-icons/fa';
+import { MdDelete,MdImage } from 'react-icons/md';
+import { FaSave,FaTimes } from 'react-icons/fa';
 import bgimage from './assets/loginbg.png'
 import { useParams } from 'react-router-dom';
 
@@ -68,16 +68,10 @@ export default function NewQuiz() {
         const questionsCopy = []
         for(let i=0;i<questions.length;i++){
             let question = questions[i];
-            if(question.questionText === ''){
+            if(question.questionText === '' && question.questionImgUrl === ''){
                 continue
             }
             questionsCopy.push(question)
-            // for(let i=0;i<questionsCopy[questionsCopy.length - 1].options.length;i++){
-            //     let option = questionsCopy[questionsCopy.length - 1].options[i]
-            //     if(option === ''){
-            //         questionsCopy[questionsCopy.length - 1].options[i] = 'NA'
-            //     }
-            // }
         }
         if(questionsCopy.length === 0){
             setDialog(1)
@@ -174,6 +168,74 @@ export default function NewQuiz() {
         };
     },[code])
 
+    const handleImageUpload = async (questionIndex, file,e) => {
+        console.log('changed')
+        if(!file){ return }
+        if (file.size > 100 * 1024) { // Check if the file size exceeds 50KB
+          alert('File size should be less than 100KB');
+          return;
+        }
+        console.log('Uploading images',file)
+
+        // if there is a previosly then after this request , give a call to delete it from server
+        if(questions[questionIndex].questionImgUrl){
+            removeImage(questionIndex)
+        }
+      
+        // Implement the image upload functionality here
+        // For example, upload the image to your server and get the image URL
+        const imageUrl = await uploadImageToServer(file);
+        console.log(imageUrl)
+      
+        // Update the question object with the image URL
+        const updatedQuestions = [...questions];
+        updatedQuestions[questionIndex].questionImgUrl = imageUrl;
+        setQuestions(updatedQuestions);
+    };
+
+    const uploadImageToServer = async (file) => {
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/uploadImg`, {
+                method: 'POST',
+                headers: {
+                    // 'Content-Type': 'multipart/form-data', DONT UNCOMMENT
+                    'authorization': localStorage.getItem('user')
+                },
+                body: formData
+            })
+            const data = await response.json()
+            if(data.error){
+                console.log(data);
+                alert('Image upload failed')
+                return ''
+            }
+            return data.imageUrl
+        } catch (err){
+            console.log(err)
+            return ''
+        }
+    }
+
+    const removeImage = (questionIndex) => {
+        if(!questions[questionIndex].questionImgUrl){ return }
+        let imgUrl = questions[questionIndex].questionImgUrl
+        const updatedQuestions = [...questions];
+        updatedQuestions[questionIndex].questionImgUrl = '';
+        setQuestions(updatedQuestions);
+
+        // delete that image url from the drive
+        fetch(`${process.env.REACT_APP_API_URL}/deleteImg`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': localStorage.getItem('user')
+            },
+            body: JSON.stringify({ imgUrl })  
+        })
+    }
+
     return (
         <div className="flex items-center flex-col mx-2">
             {showDialog === 1 ? <div>
@@ -223,15 +285,34 @@ export default function NewQuiz() {
                 <div className={`card ${isMobile?'w-full':'w-96'} bg-base-100  my-10 shadow-xl`} key={questionIndex}>
                     <div className="card-body">
                         <div className="flex items-center">
-                            <textarea placeholder={`Question ${questionIndex + 1}`} className="textarea textarea-bordered textarea-sm w-full max-w-xs" value={question.questionText} style={{
+                            <textarea placeholder={`Question ${questionIndex + 1}`} className="textarea textarea-bordered textarea-md w-full max-w-xs" value={question.questionText} style={{
                                 resize: 'none'
                             }} onChange={(e) => {
                                 handleQuestionTitleChange(questionIndex, e.target.value);
                             }}></textarea>
-                            <button className="btn btn-error btn-sm ml-2" onClick={() => handleQuestionDel(questionIndex)}>
-                                <MdDelete />
-                            </button>
+                            <div className='flex flex-col justify-center'>
+                                <button className="btn btn-error btn-xs ml-2 my-2" onClick={() => handleQuestionDel(questionIndex)}>
+                                    <MdDelete style={{ fontSize: '1.2rem' }} />
+                                </button>
+                                <label className="btn btn-outline btn-xs ml-2">
+                                <MdImage style={{ fontSize: '1.2rem' }} />
+                                    <input 
+                                        type="file" 
+                                        accept="image/*" 
+                                        className="hidden" 
+                                        onChange={(e) => {
+                                            console.log('Image changed')
+                                            handleImageUpload(questionIndex, e.target.files[0],e)
+                                        }} 
+                                    />
+                                </label>
+                            </div>
                         </div>
+                        {question.questionImgUrl && <div className="mb-2 flex flex-row">
+                            <a href={question.questionImgUrl} target="_blank" rel="noopener noreferrer" className="block text-blue-500 text-xs underline">
+                                Uploaded Image</a>
+                                <span className='ml-4'><FaTimes color='red' className=' hover:cursor-pointer' onClick={()=> {removeImage(questionIndex)}}></FaTimes></span>
+                        </div>}
                         {question.options.map((option, optionIndex) => (
                             <div className={`form-control ${optionIndex === question.correctIndex?' bg-lime-200':''}`} key={optionIndex}>
                                 <label className="cursor-pointer label">

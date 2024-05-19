@@ -57,7 +57,7 @@ export default function Home() {
         return () => {
           window.removeEventListener('resize', handleResize);
         };
-      }, []);
+      });
 
     return (
         <div className="user-options">

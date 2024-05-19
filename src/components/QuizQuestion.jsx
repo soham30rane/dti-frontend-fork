@@ -3,10 +3,23 @@ import TimerDisplay from './QuizTime';
 import { socket } from '../socket';
 
 const QuizQuestion = ({ question,roomcode }) => {
-  const { questionText, options, correctIndex,q_index } = question;
+  const { questionText, options, correctIndex,q_index,questionImgUrl } = question;
   const [selectedOption, setSelectedOption] = useState(null);
   const [answered, setAnswered] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  });
 
   const totalTime = 9; // Total time in seconds
 
@@ -55,6 +68,16 @@ const QuizQuestion = ({ question,roomcode }) => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
       <TimerDisplay percentage={getPercentageRemaining()} />
       <h1 className="text-3xl font-semibold text-white mb-6 text-center mt-6">{questionText}</h1>
+      {questionImgUrl && <div className={`flex justify-center items-center min-w-[200px] min-h-[200px] ${isMobile? 'max-h-[80vh] max-w-[90vw]' : 'max-h-[70vh] max-w-[70vw]'}`}
+          >
+          <img src={questionImgUrl} alt="Question pic" style={{
+            maxWidth: isMobile ? '90vw' : '70vw',
+            maxHeight: isMobile ? '80vh' : '70vh',
+            minWidth : isMobile ? '80px' :'150px',
+            minHeight : isMobile ? '80px' :'150px,'
+          }} />
+      </div>
+      }
       <div className="grid grid-cols-1 gap-4 mx-3 my-3">
         {options.map((option, index) => (
           <button
