@@ -73,6 +73,10 @@ export default function NewQuiz() {
                 continue
             }
             questionsCopy.push(question)
+            if(question.duration > 60) { questionsCopy[i].duration = 60}
+            if(question.duration < 5) { questionsCopy[i].duration = 5}
+            if(question.points > 1000000){ questionsCopy[i].points = 1000000 }
+            if(question.points < 50){ questionsCopy[i].points = 50 }
         }
         if(questionsCopy.length === 0){
             setDialog(1)
@@ -348,7 +352,8 @@ export default function NewQuiz() {
                                     value={question.points}
                                     onChange={(e) => handleUpdatePoints(questionIndex, e.target.value)}
                                     step={`50`}
-                                    min="0"
+                                    min="50"
+                                    max="10000000"
                                 />
                             </div>
                             <div className="form-control flex items-center">
