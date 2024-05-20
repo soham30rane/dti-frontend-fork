@@ -29,6 +29,7 @@ export default function Profile() {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [displayMyQuizzes, setDisplayMyQuizzes] = useState(true)
     const [pageNo,setPageNo] = useState(1)
+    const [showLinkCopied,setShowLinkCopied] = useState(-1)
     // const [toggeledIndex,setToggledIndex] = useState(-1)
     const TILES_PER_PAGE = 10;
     
@@ -173,6 +174,14 @@ export default function Profile() {
         } else { return }
     },[quizzesToDisplay])
 
+    const handleCodeClicked = (code,index) => {
+        navigator.clipboard.writeText(window.location.href.slice(0, -7) + 'quiz/' + code)
+        setShowLinkCopied(index)
+        setTimeout(()=>{
+            setShowLinkCopied(-1)
+        },500)
+    }
+
     return (
         <div className='min-h-screen bg-gradient-to-r from-blue-400 to-green-300' >
             <div className={`profile ${isMobile?'':'w-4/6'} mx-auto`} style={{ padding: '20px' }}>
@@ -194,7 +203,10 @@ export default function Profile() {
                     >
                         <div className='flex flex-row w-full justify-between items-center'>
                             <h3 className={`${isMobile?'text-md':'text-xl'} text-white font-bold mx-2`}>{quiz.title}</h3>
-                            <span className={`${isMobile?'text-xs':'text-sm'} text-gray-600 mx-2 min-w-16`}>{quiz.code}</span>
+                            <div className='relative'>
+                                <span className=' absolute -top-5 -left-5 bg-gray-800 text-white px-1 py-1 rounded shadow-sm t text-xs' style={{display:`${showLinkCopied===index?'block':'none'}`}}>Link copied</span>
+                                <span className={`${isMobile?'text-xs':'text-sm'} text-gray-600 mx-2 min-w-16 underline hover:cursor-pointer`} onClick={()=>{handleCodeClicked(quiz.code,index)}}>{quiz.code}</span>
+                            </div>
                             <button
                                 className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 min-w-24 rounded focus:outline-none focus:shadow-outline ${isMobile?'w-1/3':''}`}
                                 onClick={() => startOrJoin(quiz)}

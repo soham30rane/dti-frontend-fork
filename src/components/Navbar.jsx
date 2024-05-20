@@ -66,7 +66,7 @@ const Navbar = ({ connection }) => {
                 <Tooltip content="Server connection successful" placement={isMobile?'bottom':'right'} offset={isMobile?25:5}>
                 <img src={successIcon} alt="" />
                 </Tooltip>:
-                <Tooltip content="Server starting up. Please wait a moment. This might take up to 30 seconds" placement={isMobile?'bottom':'right'} open={true} offset={isMobile?25:5}>
+                <Tooltip content="Server starting up. Please wait a moment. This might take up to 30 seconds. Refresh to try again" placement={isMobile?'bottom':'right'} open={true} offset={isMobile?25:5}>
                 <img src={errorIcon} alt="" />
                 </Tooltip>
                 }
