@@ -34,7 +34,7 @@ export const getQuizPdf = (quiz) => {
         const { questionText, options, correctIndex } = question;
 
         // Prepare question text with wrapping for long titles
-        const questionLines = doc.splitTextToSize(`Q${questionNumber}: ${questionText}`, 520);
+        const questionLines = doc.splitTextToSize(`Q${questionNumber}: ${questionText}. ${question.questionImgUrl?'<IMAGE>':''}`, 520);
         tableRows.push([{ content: questionLines, colSpan: 3, styles: { fontStyle: 'bold' } }]);
 
         // Add options
@@ -46,7 +46,7 @@ export const getQuizPdf = (quiz) => {
         });
 
         // Add time per question
-        let timePerQuestion = '10s'; // You can customize this based on your needs
+        let timePerQuestion = `${question.duration}s`; // You can customize this based on your needs
         tableRows.push(['Time:', timePerQuestion, '']);
 
         // Add empty row as separator
