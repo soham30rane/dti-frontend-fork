@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import './css/Login.css'
 import bgimage from './assets/loginbg.png'
+import { confirmAlert } from 'react-confirm-alert'; // Import
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -23,28 +24,46 @@ export default function Register() {
         if(!username){setmessage('Username required');return;}
         setmessage('')
         // send the otp
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/sendOtp`,{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'breakanti'
+        confirmAlert({
+            title: 'Send otp',
+            message: `An OTP will be sent on email ${email} . Ensure your email is correct `,
+            buttons: [
+              {
+                label: 'Send OTP',
+                onClick: async () => {
+                    try {
+                        const response = await fetch(`${process.env.REACT_APP_API_URL}/user/sendOtp`,{
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'breakanti'
+                            },
+                            body: JSON.stringify({
+                                email: email
+                            })       
+                        })
+                        const data = await (response).json();
+                        setmessage(data.message)
+                        if(data.error) { 
+                            console.log(data)
+                            return
+                        }
+                        setShowOtpBox(true)
+                    } catch(err){
+                        setmessage('Unable to send otp')
+                        console.log(err)
+                    }
                 },
-                body: JSON.stringify({
-                    email: email
-                })       
-            })
-            const data = await (response).json();
-            setmessage(data.message)
-            if(data.error) { 
-                console.log(data)
-                return
-            }
-            setShowOtpBox(true)
-        } catch(err){
-            setmessage('Unable to send otp')
-            console.log(err)
-        }
+                style : { backgroundColor: 'rgb(68, 68, 240) ', color: 'white ' },
+              },
+              {
+                label: 'Cancel',
+                onClick: () => {
+                    console.log("otp cancelled")
+                } 
+              }
+            ]
+          });
     }
 
     const handleVerify = async () => {
