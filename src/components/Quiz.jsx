@@ -58,7 +58,7 @@ export default function Quiz() {
       setRunningState(RunStates.GET_READY)
     }
     function onQuestion(question,q_index){
-      console.log('Got question' , question, " i = ",q_index)
+      // console.log('Got question' , question, " i = ",q_index)
       setQuestionData({...question,q_index})
       setRunningState(RunStates.QUESTION)
     }
@@ -86,9 +86,9 @@ export default function Quiz() {
     // Join the quiz
     if(!quizFound && shouldJoinRoomRef.current){
       let token = localStorage.getItem('user')
-      console.log('token : ',token)
-      console.log('code',quizId)
-      console.log('Joining : ',token)
+      // console.log('token : ',token)
+      // console.log('code',quizId)
+      // console.log('Joining : ',token)
       socket.emit('join-room',quizId,token)
       shouldJoinRoomRef.current = false
     }
@@ -96,11 +96,11 @@ export default function Quiz() {
     function handleBeforeUnload(){
       if(quizFound){
         let token = localStorage.getItem('user')
-        console.log('token : ',token)
-        console.log('code',quizId)
-        console.log('Joining : ',token)
+        // console.log('token : ',token)
+        // console.log('code',quizId)
+        // console.log('Joining : ',token)
         localStorage.setItem('last-emit',JSON.stringify({quizId,token,msg:'leave-room'}))
-        console.log('Leaving rrom')
+        // console.log('Leaving rrom')
         socket.emit('leave-the-room',quizId,token)
       }
     }

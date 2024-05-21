@@ -24,8 +24,8 @@ const QuizQuestion = ({ question,roomcode }) => {
   });
 
   useEffect(() => {
-    console.log('total time : ',totalTime)
-    console.log('Elapsed time:', elapsedTime);
+    // console.log('total time : ',totalTime)
+    // console.log('Elapsed time:', elapsedTime);
     const timer = setInterval(() => {
       if (!answered) {
         setElapsedTime((prevTime) => prevTime + 0.1);
@@ -40,10 +40,10 @@ const QuizQuestion = ({ question,roomcode }) => {
       setSelectedOption(index);
       setAnswered(true);
       let token = localStorage.getItem('user')
-      console.log('Delta factor : ',getPercentageRemaining())
+      // console.log('Delta factor : ',getPercentageRemaining())
       const delta = (100 - getPercentageRemaining()) * -0.01 * 0.5; // Minimum score for right answer 50%
-      console.log(delta)
-      console.log('answer',roomcode,q_index,index,token,delta)
+      // console.log(delta)
+      // console.log('answer',roomcode,q_index,index,token,delta)
       socket.emit('answer',roomcode,q_index,index,token,delta)
     }
   };
@@ -63,7 +63,7 @@ const QuizQuestion = ({ question,roomcode }) => {
     return ((totalTime - elapsedTime) / totalTime) * 100;
   };
 
-  console.log('Percentage remaining:', getPercentageRemaining());
+  // console.log('Percentage remaining:', getPercentageRemaining());
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-purple-400 to-indigo-600">
