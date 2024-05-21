@@ -9,6 +9,12 @@ const Navbar = ({ connection }) => {
     const [username, setUsername] = useState('');
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+    useEffect(()=>{
+        if(window.location.host === 'main--mellow-sprite-c623cb.netlify.app'){
+            window.location.href = 'https://the-quest.tech'
+        }
+    },[])
+
     useEffect(() => {
         const handleResize = () => {
           setIsMobile(window.innerWidth <= 768);
