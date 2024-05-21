@@ -187,8 +187,8 @@ export default function NewQuiz() {
         console.log('changed')
         if(!file){ return }
         let imageCompressed = false
-        if (file.size > 2 * 1024 * 1024) { // Check if the file size exceeds 50KB
-          alert('File size should be less than 2mb');
+        if (file.size > 4 * 1024 * 1024) { // Check if the file size exceeds 50KB
+          alert('File size should be less than 4mb');
           return;
         } else if(file.size <= 100 * 1024){
             console.log("Already compressed image")
