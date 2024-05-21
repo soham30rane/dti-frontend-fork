@@ -69,7 +69,8 @@ export default function NewQuiz() {
         const questionsCopy = []
         for(let i=0;i<questions.length;i++){
             let question = questions[i];
-            if(question.questionText === '' && question.questionImgUrl === ''){
+            console.log('Question : ',question.questionText , ' img : ',question.questionImgUrl)
+            if(!question.questionText && !question.questionImgUrl){
                 continue
             }
             questionsCopy.push(question)
