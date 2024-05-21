@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { CiCirclePlus } from 'react-icons/ci';
 import { MdDelete,MdImage } from 'react-icons/md';
-import { FaSave,FaTimes } from 'react-icons/fa';
+import { FaSave,FaTimes,FaSpinner } from 'react-icons/fa';
 import bgimage from './assets/loginbg.png'
 import { useParams } from 'react-router-dom';
+import imageCompression from 'browser-image-compression';
 
 const OP_MODE = {
     NORMAL : "normal",
@@ -19,6 +20,7 @@ export default function NewQuiz() {
     const [error, seterror] = useState('');
     const [code, setCode] = useState('');
     const [editCode,setEditCode] = useState('');
+    const [questionsLoading,setQuestionsLoading] = useState(-1)
 
     useEffect(()=>{
         if(mode === OP_MODE.DUPLICATE){
@@ -184,11 +186,40 @@ export default function NewQuiz() {
     const handleImageUpload = async (questionIndex, file,e) => {
         console.log('changed')
         if(!file){ return }
-        if (file.size > 100 * 1024) { // Check if the file size exceeds 50KB
-          alert('File size should be less than 100KB');
+        let imageCompressed = false
+        if (file.size > 2 * 1024 * 1024) { // Check if the file size exceeds 50KB
+          alert('File size should be less than 2mb');
           return;
+        } else if(file.size <= 100 * 1024){
+            console.log("Already compressed image")
+            imageCompressed = true
+        } else {
+            console.log('originalFile instanceof Blob', file instanceof Blob); // true
+            console.log(`originalFile size ${file.size / 1024 } KB`);
+            const options = {
+                maxSizeMB: (1/1024)*(file.size > 500 * 1024 ?200:100),
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+              }
+              try {
+                setQuestionsLoading(questionIndex)
+                const compressedFile = await imageCompression(file, options);
+                console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+                console.log(`compressedFile size ${compressedFile.size / 1024 } KB`); // smaller than maxSizeMB
+                imageCompressed = true
+                file = compressedFile
+              } catch (error) {
+                imageCompressed = false
+                console.log(error);
+                setQuestionsLoading(-1)
+              }
         }
-        console.log('Uploading images',file)
+        if(!imageCompressed){
+            alert('There was some error while compressing the image, try uploading image of less than 100KB')
+            return
+        }
+        console.log('Uploading image',file)
+        setQuestionsLoading(questionIndex)
 
         // if there is a previosly then after this request , give a call to delete it from server
         if(questions[questionIndex].questionImgUrl){
@@ -204,6 +235,7 @@ export default function NewQuiz() {
         const updatedQuestions = [...questions];
         updatedQuestions[questionIndex].questionImgUrl = imageUrl;
         setQuestions(updatedQuestions);
+        setQuestionsLoading(-1)
     };
 
     const uploadImageToServer = async (file) => {
@@ -326,6 +358,7 @@ export default function NewQuiz() {
                                 Uploaded Image</a>
                                 <span className='ml-4'><FaTimes color='red' className=' hover:cursor-pointer' onClick={()=> {removeImage(questionIndex)}}></FaTimes></span>
                         </div>}
+                        {!question.questionImgUrl && questionsLoading === questionIndex && <span className='ml-auto'><FaSpinner className=' animate-spin'></FaSpinner></span>}
                         {question.options.map((option, optionIndex) => (
                             <div className={`form-control ${optionIndex === question.correctIndex?' bg-lime-200':''}`} key={optionIndex}>
                                 <label className="cursor-pointer label">
