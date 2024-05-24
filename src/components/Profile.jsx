@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AiOutlineCopy, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import { MdFileDownload,MdPeople } from 'react-icons/md';
+import { FaSpinner } from 'react-icons/fa'
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { getQuizPdf } from '../helpers/pdfLogic';
@@ -30,6 +31,7 @@ export default function Profile() {
     const [displayMyQuizzes, setDisplayMyQuizzes] = useState(true)
     const [pageNo,setPageNo] = useState(1)
     const [showLinkCopied,setShowLinkCopied] = useState(-1)
+    const [isLoading, setIsLoading] = useState(true)
     // const [toggeledIndex,setToggledIndex] = useState(-1)
     const TILES_PER_PAGE = 10;
     
@@ -61,6 +63,7 @@ export default function Profile() {
             // console.log(data.quizes);
             setQuizzes(data.quizes);
             setOtherQuizzes(data.otherQuizzes)
+            setIsLoading(false)
         } catch(err){
             console.log(err)
             window.location.href = '/'
@@ -194,8 +197,9 @@ export default function Profile() {
                 <span role="tab" className={`tab ${displayMyQuizzes?'':'tab-active'}`}  
                 onClick={()=>{ setDisplayMyQuizzes(false)}}>Other Quizzes</span>
             </div>
+                {isLoading && <div className='mx-auto mt-16'><FaSpinner className='mx-auto animate-spin'></FaSpinner></div> }
                 {quizzesToDisplay && <div className="quiz-list">
-                    {quizzesToDisplay.length === 0?<div className='text-center text-gray-800 text-lg font-semibold py-4' > No Quizzes yet </div>:<></>}
+                    {quizzesToDisplay.length === 0 && !isLoading && <div className='text-center text-gray-800 text-lg font-semibold py-4' > No Quizzes yet </div>}
                     {sortQuizzes(quizzesToDisplay).slice((pageNo-1)*TILES_PER_PAGE,(pageNo-1)*TILES_PER_PAGE + TILES_PER_PAGE).map((quiz, index) => (
                         <div
                         key={index}
